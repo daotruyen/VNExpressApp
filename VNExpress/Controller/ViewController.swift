@@ -5,6 +5,13 @@
 //  Created by Tuyen on 05/07/2021.
 //
 
+//
+//  ViewController.swift
+//  VNExpress
+//
+//  Created by Tuyen on 05/07/2021.
+//
+
 import UIKit
 import SwiftSoup
 import SafariServices
@@ -37,7 +44,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var linkHrefImg = ""
     var currentLink:String = ""
     var url: URL!
-    var link:String = ""
+   // var link:String = ""
+    //var linkContent: String = ""
     var urlString: String = "https://vnexpress.net/rss/tin-moi-nhat.rss"
     
     // table Cell
@@ -51,10 +59,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         do{
             let doc: Document = try SwiftSoup.parse(contents)
             
-             if let a:Element = try doc.select("a").first() {
-                link = try a.attr("href")
-               // print(link)
-             }
+//             let a:Element? = try doc.select("a").first()
+//             if let a = a{
+//                link = try a.attr("href")
+//               // print(link)
+//             }else {
+//                link = (linkContent != "") ? linkContent : ""
+//             }
             
             
             let image: Element? = try doc.select("img").first()
@@ -64,7 +75,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 linkHrefImg = (currentLink != "") ? currentLink : "https://i1-kinhdoanh.vnecdn.net/2021/07/05/w1-1625475344-8362-1625476036.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=yaNdI4NabU_nwn6Ynoy_Kg"
                             }
             //linkImage = try image.attr("src")
-            //print(linkImage)
+            
             text = try doc.body()!.text();
             //print(text)
         }
@@ -89,7 +100,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let url = URL(string: link) else {
+        guard let url = URL(string:( news.object(at: indexPath.row) as AnyObject).object(forKey: "link") as! String) else {
                 return
             }
         let safariVC = SFSafariViewController(url: url)
@@ -112,7 +123,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var TableView: UITableView!
    
     @IBAction func reload(_ sender: Any) {
-        loadData()
+        setupSideMenu()
+        //loadData()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,5 +175,6 @@ extension Date {
         return dateFormatter.string(from: Date(timeIntervalSince1970: Date().timeIntervalSince1970 - self.timeIntervalSince1970))
     }
 }
+
 
 
